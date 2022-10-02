@@ -3,9 +3,28 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import db from "../firebase";
 
+import Backdrop from "@mui/material/Backdrop";
+import YouTube from "react-youtube";
+import { height } from "@mui/system";
+
 const Detail = (props) => {
   const { id } = useParams();
   const [detailData, setDetailData] = useState({});
+
+  const [open, setOpen] = useState(false);
+
+  const openBackdrop = () => {
+    setOpen(true);
+  };
+
+  // youtube options
+  const opts = {
+    height: "100%",
+    width: "100%",
+    playerVars: {
+      autoplay: 0,
+    },
+  };
 
   useEffect(() => {
     db.collection("movies")
@@ -25,6 +44,13 @@ const Detail = (props) => {
 
   return (
     <Container>
+      <Backdrop open={open} onClick={() => setOpen(false)}>
+        <YouTube
+          videoId={detailData.trailer}
+          opts={opts}
+          style={{ width: "80%", height: "80%" }}
+        />
+      </Backdrop>
       <Background>
         <img alt={detailData.title} src={detailData.backgroundImg} />
       </Background>
@@ -38,7 +64,7 @@ const Detail = (props) => {
             <img src="/images/play-icon-black.png" alt="" />
             <span>Play</span>
           </Player>
-          <Trailer>
+          <Trailer onClick={openBackdrop}>
             <img src="/images/play-icon-white.png" alt="" />
             <span>Trailer</span>
           </Trailer>
